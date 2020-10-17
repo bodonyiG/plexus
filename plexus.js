@@ -135,7 +135,7 @@ class Particle {
 
   force(){
     const dist = distance(player.position, this.position);
-    
+
   }
 
   update() {
@@ -183,9 +183,10 @@ document.querySelector("body").addEventListener("mousemove", function(event) {
   player.position.y = event.clientY;
 });
 //
-// document.querySelector("body").addEventListener("touchmove", function(event) {
-//
-// });
+document.querySelector("body").addEventListener("touchmove", function(event) {
+  player.position.x = event.clientX;
+  player.position.y = event.clientY;
+});
 
 window.addEventListener("resize", function(event){
   canvas.width = window.innerWidth;
