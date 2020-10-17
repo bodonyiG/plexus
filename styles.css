@@ -1,4 +1,38 @@
 body{
-  background-color: red;
+text-align: center;
   margin: 0;
+
+  font-family: 'Sansita Swashed', cursive;
+}
+
+
+canvas{
+  position: absolute;
+  z-index: -1;
+  margin: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+}
+
+h1{
+  /* margin: 0; */
+  color: white;
+
+}
+p{
+  font-family: 'Lato', sans-serif;
+  margin: 0 20px 40px;;
+}
+
+
+.bg{
+  display: inline-block;
+  margin: 0;
+  background-color: rgba(255,255,255, .6);
+  width: 60%;
+  height: 80%;
+  border-radius: 5px;
+  margin-top: 200px;
 }

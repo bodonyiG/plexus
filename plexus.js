@@ -1,13 +1,14 @@
 const canvas = document.querySelector('canvas');
 const c = canvas.getContext("2d");
-const numParticles = 30;
+const numParticles = 90;
 const particles = [];
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 var animate = true;
 const backgroundColor = "black";
 const particleColor = "white";
-const lineMaxDist = 200;
+const lineMaxDist = 150;
+let frame = 0;
 
 class Particle {
   constructor(position, radius, velocity, color) {
@@ -39,10 +40,10 @@ class Particle {
   }
 
   walls() {
-    if(this.position.x < 0 + this.radius || this.position.x > canvas.width - this.radius){
+    if (this.position.x < 0 + this.radius || this.position.x > canvas.width - this.radius) {
       this.velocity.x *= -1;
     }
-    if(this.position.y < 0 + this.radius || this.position.y > canvas.height - this.radius){
+    if (this.position.y < 0 + this.radius || this.position.y > canvas.height - this.radius) {
       this.velocity.y *= -1;
     }
 
@@ -56,24 +57,28 @@ class Particle {
   }
 }
 
-class Particle {
-  constructor(position, radius, velocity, color) {
-    this.position = position;
+class Player {
+  constructor(radius, color) {
+    this.position = {
+      x: canvas.width / 2,
+      y: canvas.height / 2
+    };
     this.radius = radius;
-    this.velocity = velocity;
     this.color = color;
-  }
+  };
   draw() {
     c.beginPath();
     c.arc(this.position.x, this.position.y, this.radius, 0, Math.PI * 2, false);
     c.fillStyle = this.color;
     c.fill();
-  }
+  };
 
-  update() {
+  update(){
     this.draw();
-    this.position = addObj(this.position, this.velocity);
-  }
+    this.radius = (Math.sin(frame*.04)+1)*2 ;
+    this.radius += 3;
+  };
+
 }
 
 // FUNCTIONS-----------------------------------------------------------
@@ -89,6 +94,7 @@ function addObj(obj1, obj2) {
   return obj1;
 }
 
+var player = new Player(5, "white");
 
 function spawn() {
   for (i = 0; i < numParticles; i++) {
@@ -105,13 +111,17 @@ function spawn() {
   }
 }
 
+
+
+
 function distance(position1, position2) {
   const a = position1.x - position2.x;
   const b = position1.y - position2.y;
-  return Math.hypot(a, b);
+  return Math.sqrt(a*a + b*b);
 }
 
 function animation() {
+  frame ++;
   if (animate == true) {
     requestAnimationFrame(animation);
   }
@@ -121,24 +131,53 @@ function animation() {
 
   particles.forEach((particle) => {
     particle.update();
+    const dist = distance(particle.position, player.position);
+    if (dist < lineMaxDist) {
+      c.beginPath();
+      c.moveTo(particle.position.x, particle.position.y);
+      c.lineTo(player.position.x, player.position.y);
+      c.strokeStyle = `rgba(255,255,255, ${ map_range(dist, 0, lineMaxDist, .2, 0) })`;
+      c.closePath();
+      c.stroke();
+
+    }
+
+
     particles.forEach((otherParticle) => {
-      const dist = distance(particle.position, otherParticle.position);
+      var dist = distance(particle.position, otherParticle.position);
       if (dist != 0 && dist < lineMaxDist) {
+        c.beginPath();
         c.moveTo(particle.position.x, particle.position.y);
         c.lineTo(otherParticle.position.x, otherParticle.position.y);
         c.strokeStyle = `rgba(255,255,255, ${ map_range(dist, 0, lineMaxDist, .2, 0) })`;
+        c.closePath();
         c.stroke();
+
       }
     });
+
   });
+  player.update();
 
 }
 
 
 //ACTUAL GAME //////////////////////////////////////////////////////////
-console.log(particles);
 spawn();
 animation();
+
+document.querySelector("body").addEventListener("mousemove", function(event) {
+  player.position.x = event.clientX;
+  player.position.y = event.clientY;
+});
+
+window.addEventListener("resize", function(event){
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+});
+
+
+
 
 //LINE---------------------------------------------------------------------
 // ctx.moveTo(0, 0);
