@@ -135,8 +135,14 @@ class Particle {
 
   force(){
     const dist = distance(player.position, this.position);
-
+    if(dist < forceDist){
+      const direction = map_range(dist, 0, forceDist, -1.5, -.5);
+      const angle = Math.atan2(player.position.y- this.position.y, player.position.x-this.position.x);
+      this.velocity.x = Math.cos(angle)*direction;
+      this.velocity.y = Math.sin(angle)*direction;
+    }
   }
+  
 
   update() {
     this.draw();
