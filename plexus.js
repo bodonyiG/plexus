@@ -5,83 +5,13 @@ const particles = [];
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 var animate = true;
-const backgroundColor = "black";
-const particleColor = "white";
+const backgroundColor = "#213e3b";
+const particleColor = "#a6f6f1";
 const lineMaxDist = 150;
 let frame = 0;
+const forceDist = 100;
 
-class Particle {
-  constructor(position, radius, velocity, color) {
-    this.position = position;
-    this.radius = radius;
-    this.velocity = velocity;
-    this.color = color;
-  }
-  draw() {
-    c.beginPath();
-    c.arc(this.position.x, this.position.y, this.radius, 0, Math.PI * 2, false);
-    c.fillStyle = this.color;
-    c.fill();
-  }
-
-  borders() {
-    if (this.position.x < 0 - this.radius) {
-      this.position.x += canvas.width + this.radius * 2;
-    }
-    if (this.position.x > canvas.width + this.radius) {
-      this.position.x -= canvas.width + this.radius * 2;
-    }
-    if (this.position.y < 0 - this.radius) {
-      this.position.y += canvas.height + this.radius * 2;
-    }
-    if (this.position.y > canvas.height + this.radius) {
-      this.position.y -= canvas.height + this.radius * 2;
-    }
-  }
-
-  walls() {
-    if (this.position.x < 0 + this.radius || this.position.x > canvas.width - this.radius) {
-      this.velocity.x *= -1;
-    }
-    if (this.position.y < 0 + this.radius || this.position.y > canvas.height - this.radius) {
-      this.velocity.y *= -1;
-    }
-
-  }
-
-  update() {
-    this.draw();
-    // this.borders();
-    this.walls();
-    this.position = addObj(this.position, this.velocity);
-  }
-}
-
-class Player {
-  constructor(radius, color) {
-    this.position = {
-      x: canvas.width / 2,
-      y: canvas.height / 2
-    };
-    this.radius = radius;
-    this.color = color;
-  };
-  draw() {
-    c.beginPath();
-    c.arc(this.position.x, this.position.y, this.radius, 0, Math.PI * 2, false);
-    c.fillStyle = this.color;
-    c.fill();
-  };
-
-  update(){
-    this.draw();
-    this.radius = (Math.sin(frame*.04)+1)*2 ;
-    this.radius += 3;
-  };
-
-}
-
-// FUNCTIONS-----------------------------------------------------------
+//FUNCTIONS /////////////////////////////////////////////////////////
 function map_range(value, low1, high1, low2, high2) {
   return low2 + (high2 - low2) * (value - low1) / (high1 - low1);
 }
@@ -94,7 +24,7 @@ function addObj(obj1, obj2) {
   return obj1;
 }
 
-var player = new Player(5, "white");
+
 
 function spawn() {
   for (i = 0; i < numParticles; i++) {
@@ -161,8 +91,89 @@ function animation() {
 
 }
 
+//CLASSES ////////////////////////////////////////////////////////////////
+
+
+class Particle {
+  constructor(position, radius, velocity, color) {
+    this.position = position;
+    this.radius = radius;
+    this.velocity = velocity;
+    this.color = color;
+  }
+  draw() {
+    c.beginPath();
+    c.arc(this.position.x, this.position.y, this.radius, 0, Math.PI * 2, false);
+    c.fillStyle = this.color;
+    c.fill();
+  }
+
+  borders() {
+    if (this.position.x < 0 - this.radius) {
+      this.position.x += canvas.width + this.radius * 2;
+    }
+    if (this.position.x > canvas.width + this.radius) {
+      this.position.x -= canvas.width + this.radius * 2;
+    }
+    if (this.position.y < 0 - this.radius) {
+      this.position.y += canvas.height + this.radius * 2;
+    }
+    if (this.position.y > canvas.height + this.radius) {
+      this.position.y -= canvas.height + this.radius * 2;
+    }
+  }
+
+  walls() {
+    if (this.position.x < 0 + this.radius || this.position.x > canvas.width - this.radius) {
+      this.velocity.x *= -1;
+    }
+    if (this.position.y < 0 + this.radius || this.position.y > canvas.height - this.radius) {
+      this.velocity.y *= -1;
+    }
+
+  }
+
+  force(){
+
+  }
+
+  update() {
+    this.draw();
+    // this.borders();
+    this.walls();
+    this.force();
+    this.position = addObj(this.position, this.velocity);
+  }
+}
+
+class Player {
+  constructor(radius, color) {
+    this.position = {
+      x: canvas.width / 2,
+      y: canvas.height / 2
+    };
+    this.radius = radius;
+    this.color = color;
+  };
+  draw() {
+    c.beginPath();
+    c.arc(this.position.x, this.position.y, this.radius, 0, Math.PI * 2, false);
+    c.fillStyle = this.color;
+    c.fill();
+  };
+
+  update(){
+    this.draw();
+    this.radius = (Math.sin(frame*.04)+1)*2 ;
+    this.radius += 3;
+  };
+
+}
+
+
 
 //ACTUAL GAME //////////////////////////////////////////////////////////
+var player = new Player(5, "white");
 spawn();
 animation();
 
