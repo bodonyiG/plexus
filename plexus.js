@@ -62,11 +62,11 @@ function animation() {
   particles.forEach((particle) => {
     particle.update();
     const dist = distance(particle.position, player.position);
-    if (dist < lineMaxDist) {
+    if (dist < lineMaxDist*3) {
       c.beginPath();
       c.moveTo(particle.position.x, particle.position.y);
       c.lineTo(player.position.x, player.position.y);
-      c.strokeStyle = `rgba(255,255,255, ${ map_range(dist, 0, lineMaxDist, .2, 0) })`;
+      c.strokeStyle = `rgba(255,255,255, ${ map_range(dist, 0, lineMaxDist*3, .2, 0) })`;
       c.closePath();
       c.stroke();
 
@@ -184,8 +184,15 @@ document.querySelector("body").addEventListener("mousemove", function(event) {
 });
 //
 document.querySelector("body").addEventListener("touchmove", function(event) {
-  player.position.x = event.clientX;
-  player.position.y = event.clientY;
+
+  player.position.x = Math.round(event.changedTouches[0].clientX);
+  player.position.y =Math.round(event.changedTouches[0].clientY);
+});
+
+document.querySelector("body").addEventListener("touchstart", function(event) {
+
+  player.position.x = Math.round(event.changedTouches[0].clientX);
+  player.position.y =Math.round(event.changedTouches[0].clientY);
 });
 
 window.addEventListener("resize", function(event){
