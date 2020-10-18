@@ -4,12 +4,15 @@ const numParticles = 90;
 const particles = [];
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
+let canvasArea = (canvas.width+canvas.height)/2;
 var animate = true;
 const backgroundColor = "#213e3b";
 const particleColor = "#a6f6f1";
-const lineMaxDist = 150;
+
+let lineDist = .2;
 let frame = 0;
-const forceDist = 100;
+let forceDist = .2;
+let playerlineDist = .5;
 
 //FUNCTIONS /////////////////////////////////////////////////////////
 function map_range(value, low1, high1, low2, high2) {
@@ -57,16 +60,17 @@ function animation() {
   }
   //clean // bg
   c.fillStyle = backgroundColor;
+  // c.fillStyle = "rgba(0,0,0,.005)";
   c.fillRect(0, 0, canvas.width, canvas.height);
 
   particles.forEach((particle) => {
     particle.update();
     const dist = distance(particle.position, player.position);
-    if (dist < lineMaxDist*3) {
+    if (dist < playerlineDist* canvasArea) {
       c.beginPath();
       c.moveTo(particle.position.x, particle.position.y);
       c.lineTo(player.position.x, player.position.y);
-      c.strokeStyle = `rgba(255,255,255, ${ map_range(dist, 0, lineMaxDist*3, .2, 0) })`;
+      c.strokeStyle = `rgba(255,255,255, ${ map_range(dist, 0, playerlineDist*canvasArea, .2, 0) })`;
       c.closePath();
       c.stroke();
 
@@ -75,11 +79,11 @@ function animation() {
 
     particles.forEach((otherParticle) => {
       var dist = distance(particle.position, otherParticle.position);
-      if (dist != 0 && dist < lineMaxDist) {
+      if (dist != 0 && dist < lineDist*canvasArea) {
         c.beginPath();
         c.moveTo(particle.position.x, particle.position.y);
         c.lineTo(otherParticle.position.x, otherParticle.position.y);
-        c.strokeStyle = `rgba(255,255,255, ${ map_range(dist, 0, lineMaxDist, .2, 0) })`;
+        c.strokeStyle = `rgba(255,255,255, ${ map_range(dist, 0, lineDist*canvasArea, .2, 0) })`;
         c.closePath();
         c.stroke();
 
@@ -135,8 +139,8 @@ class Particle {
 
   force(){
     const dist = distance(player.position, this.position);
-    if(dist < forceDist){
-      const direction = map_range(dist, 0, forceDist, -1.5, -.5);
+    if(dist < forceDist*canvasArea){
+      const direction = map_range(dist, 0, forceDist*canvasArea, -1.5, -.5);
       const angle = Math.atan2(player.position.y- this.position.y, player.position.x-this.position.x);
       this.velocity.x = Math.cos(angle)*direction;
       this.velocity.y = Math.sin(angle)*direction;
@@ -210,6 +214,8 @@ window.addEventListener("resize", function(event){
   });
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
+  canvasArea = (canvas.width+canvas.height)/2;
+
 });
 
 
