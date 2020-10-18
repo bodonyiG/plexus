@@ -142,7 +142,7 @@ class Particle {
       this.velocity.y = Math.sin(angle)*direction;
     }
   }
-  
+
 
   update() {
     this.draw();
@@ -202,6 +202,12 @@ document.querySelector("body").addEventListener("touchstart", function(event) {
 });
 
 window.addEventListener("resize", function(event){
+  const oldW = canvas.width;
+  const oldH = canvas.height;
+  particles.forEach((particle) => {
+    particle.position.x *= window.innerWidth / oldW;
+    particle.position.y *= window.innerHeight/ oldH;
+  });
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
 });
